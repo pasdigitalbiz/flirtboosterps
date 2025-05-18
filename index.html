@@ -1,0 +1,97 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flirt Booster</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 2rem;
+        background-color: #fff0f5;
+        max-width: 600px;
+        margin: auto;
+      }
+      h1 {
+        color: #d63384;
+        text-align: center;
+      }
+      textarea, select, button {
+        width: 100%;
+        margin-top: 1rem;
+        padding: 0.6rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background-color: #ff69b4;
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+      }
+      #output {
+        margin-top: 2rem;
+        background: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>ChatCoach AI</h1>
+
+    <textarea id="inputText" rows="5" placeholder="Inserisci qui la bio o il messaggio del match..."></textarea>
+
+    <select id="tone">
+      <option value="Divertente">Divertente</option>
+      <option value="Ironico">Ironico</option>
+      <option value="Sicuro di sé">Sicuro di sé</option>
+      <option value="Romantico">Romantico</option>
+    </select>
+
+    <select id="language">
+      <option value="Italiano">Italiano</option>
+      <option value="Inglese">Inglese</option>
+      <option value="Francese">Francese</option>
+      <option value="Tedesco">Tedesco</option>
+      <option value="Spagnolo">Spagnolo</option>
+    </select>
+
+    <button onclick="generateResponse()">Genera Risposte</button>
+
+    <div id="output"> </div>
+
+    <script>
+      async function generateResponse() {
+        const inputText = document.getElementById("inputText").value;
+        const tone = document.getElementById("tone").value;
+        const language = document.getElementById("language").value;
+
+        if (!inputText || !tone || !language) {
+          document.getElementById("output").textContent = "Compila tutti i campi.";
+          return;
+        }
+
+        const payload = { inputText, tone, language };
+
+        try {
+          const response = await fetch("/api/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          const data = await response.json();
+          document.getElementById("output").textContent =
+            data.output || "Errore nella risposta.";
+        } catch (error) {
+          document.getElementById("output").textContent = "Errore API: " + error.message;
+        }
+      }
+    </script>
+  </body>
+</html>
